@@ -20,6 +20,7 @@
 							python313Packages.pillow
 							python313Packages.black
 							python313Packages.flake8
+							python313Packages.mypy
             ];
 
             shellHook = ''
