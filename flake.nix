@@ -9,6 +9,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
+			psxify = mkPoetryApplication { projectDir = ./.; };
     in
     {
       devShells.${system}.default = pkgs.mkShell {
@@ -20,8 +21,11 @@
 				];
       };
 
-      packages.${system}.default = mkPoetryApplication {
-        projectDir = self;
+      apps.${system}.default = {
+				type = "app";
+        program = "${psxify}/bin/psxify";
       };
+
+      packages.${system}.default = psxify;
     };
 }

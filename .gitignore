@@ -1,1 +1,4 @@
 core
+dist
+.mypy_cache
+result

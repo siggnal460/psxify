@@ -96,8 +96,7 @@ def split_filepath(filepath: str) -> tuple[str, str]:
         print(bcolors.ENDC, end="")
         return "", ""
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="Convert a texture to a PS1-style."
     )
@@ -161,3 +160,6 @@ if __name__ == "__main__":
     )
 
     exit(0)
+
+if __name__ == "__main__":
+    main()
