@@ -1,31 +1,28 @@
 {
   description = "PSXify, a simple script to turn any image file into a PS1 texture.";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  inputs =
-    {
-      nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs = {
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+  };
+  outputs = { self, nixpkgs, flake-utils, poetry2nix }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
 
-  outputs = { nixpkgs, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      devShells.x86_64-linux.default =
-        pkgs.mkShell
-          {
-            nativeBuildInputs = with pkgs; [
-              python313
-							python313Packages.pillow
-							python313Packages.black
-							python313Packages.flake8
-							python313Packages.mypy
-            ];
+      in {
+        devShells.default = pkgs.mkShell {
+          inputsFrom = [ self.packages.${system}.default ];
+        };
 
-            shellHook = ''
-              nu
-            '';
-          };
-    };
+        packages.default = mkPoetryApplication {
+          projectDir = self;
+        };
+      }
+    );
 }
