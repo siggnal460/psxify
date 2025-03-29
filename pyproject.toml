@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "psxify"
-version = "2025.3.29"
+version = "2025.3.29-1"
 description = "A simple script to turn any image file into a PS1 texture."
 authors = [
     {name = "siggnal460", email = "siggnal@proton.me" }
