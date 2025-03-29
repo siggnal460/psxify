@@ -18,9 +18,14 @@
       in {
         devShells.default = pkgs.mkShell {
           inputsFrom = [ self.packages.${system}.default ];
+					nativeBuildInputs = with pkgs; [
+					  python312Packages.black
+					  python312Packages.mypy
+					  python312Packages.flake8
+					];
         };
 
-        packages.default = mkPoetryApplication {
+        packages.x86_64-linux.default = mkPoetryApplication {
           projectDir = self;
         };
       }
