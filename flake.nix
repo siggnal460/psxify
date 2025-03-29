@@ -6,14 +6,14 @@
 
   outputs = { self, nixpkgs, poetry2nix }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
-			psxify = mkPoetryApplication { projectDir = ./.; };
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      currentSystem = "x86_64-linux";
+			pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
     in
     {
-      devShells.${system}.default = pkgs.mkShell {
-        inputsFrom = [ self.packages.${system}.default ];
+      devShells.${currentSystem}.default = pkgs.mkShell {
+        inputsFrom = [ self.packages.${currentSystem}.default ];
 				nativeBuildInputs = with pkgs; [
 				  python312Packages.black
 				  python312Packages.mypy
@@ -21,11 +21,10 @@
 				];
       };
 
-      apps.${system}.default = {
-				type = "app";
-        program = "${psxify}/bin/psxify";
-      };
-
-      packages.${system}.default = psxify;
+      packages = forAllSystems (system: let
+        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
+      in {
+        default = mkPoetryApplication { projectDir = self; };
+      });
     };
 }
