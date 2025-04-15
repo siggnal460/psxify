@@ -2,6 +2,8 @@
 
 PSXify is a very simple Python script that converts an image into a PS1 Texture.
 
+You can run it via nix with `nix run github:siggnal460/psxify`
+
 ## Usage
 
 usage: `psxify.py [-h] [-r {detailed,standard,low}] [-p {true,false}] input_image output_image`
